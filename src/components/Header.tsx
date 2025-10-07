@@ -2,9 +2,12 @@ import { Search, ShoppingCart, User, Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
+import { useCart } from "@/context/CartContext";
+import { Link } from "react-router-dom";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { getTotalItems } = useCart();
 
   return (
     <header className="w-full bg-background border-b border-border sticky top-0 z-50 backdrop-blur-sm bg-background/95">
@@ -21,10 +24,17 @@ const Header = () => {
             <Menu className="h-6 w-6" />
           </Button>
           <div className="flex items-center gap-4">
-            <Button variant="ghost" size="icon">
-              <ShoppingCart className="h-5 w-5" />
-              <span className="sr-only">Cart</span>
-            </Button>
+            <Link to="/cart">
+              <Button variant="ghost" size="icon" className="relative">
+                <ShoppingCart className="h-5 w-5" />
+                {getTotalItems() > 0 && (
+                  <span className="absolute -top-1 -right-1 bg-accent text-accent-foreground text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                    {getTotalItems()}
+                  </span>
+                )}
+                <span className="sr-only">Cart</span>
+              </Button>
+            </Link>
             <Button variant="ghost" size="icon">
               <User className="h-5 w-5" />
               <span className="sr-only">Account</span>
@@ -47,21 +57,28 @@ const Header = () => {
           </div>
 
           {/* Logo */}
-          <div className="flex-shrink-0">
+          <Link to="/" className="flex-shrink-0">
             <h1 className="text-3xl md:text-4xl font-serif text-center bg-gradient-hero bg-clip-text text-transparent">
               SAVE THE DATE
             </h1>
             <p className="text-xs text-center text-muted-foreground uppercase tracking-wider">
               Bespoke Invitations
             </p>
-          </div>
+          </Link>
 
           {/* Account & Cart - Desktop */}
           <div className="hidden lg:flex items-center gap-4 flex-1 justify-end max-w-xs">
-            <Button variant="ghost" size="sm" className="gap-2">
-              <ShoppingCart className="h-5 w-5" />
-              <span className="text-sm">(0)</span>
-            </Button>
+            <Link to="/cart">
+              <Button variant="ghost" size="sm" className="gap-2 relative">
+                <ShoppingCart className="h-5 w-5" />
+                <span className="text-sm">({getTotalItems()})</span>
+                {getTotalItems() > 0 && (
+                  <span className="absolute -top-1 -right-1 bg-accent text-accent-foreground text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                    {getTotalItems()}
+                  </span>
+                )}
+              </Button>
+            </Link>
             <Button variant="ghost" size="sm" className="gap-2">
               <User className="h-5 w-5" />
               <span className="text-sm">ACCOUNT</span>
@@ -85,34 +102,29 @@ const Header = () => {
         <nav className={`${isMenuOpen ? 'block' : 'hidden'} lg:block mt-6`}>
           <ul className="flex flex-col lg:flex-row items-center justify-center gap-4 lg:gap-8 text-sm uppercase tracking-wider">
             <li>
-              <a href="/" className="hover:text-primary transition-colors duration-300">
+              <Link to="/" className="hover:text-primary transition-colors duration-300">
                 Home
-              </a>
+              </Link>
             </li>
             <li>
-              <a href="/stationeries" className="hover:text-primary transition-colors duration-300">
-                Invitation Stationeries
-              </a>
+              <Link to="/products" className="hover:text-primary transition-colors duration-300">
+                Shop Products
+              </Link>
             </li>
             <li>
-              <a href="/story" className="hover:text-primary transition-colors duration-300">
+              <Link to="/story" className="hover:text-primary transition-colors duration-300">
                 Our Story
-              </a>
+              </Link>
             </li>
             <li>
-              <a href="/customized" className="hover:text-primary transition-colors duration-300">
-                Customized Invitation Stories
-              </a>
-            </li>
-            <li>
-              <a href="/contact" className="hover:text-primary transition-colors duration-300">
+              <Link to="/contact" className="hover:text-primary transition-colors duration-300">
                 Contact Us
-              </a>
+              </Link>
             </li>
             <li>
-              <a href="/appointment" className="hover:text-primary transition-colors duration-300">
-                Book an Appointment
-              </a>
+              <Link to="/cart" className="hover:text-primary transition-colors duration-300">
+                Cart
+              </Link>
             </li>
           </ul>
         </nav>
